@@ -1,0 +1,76 @@
+<html>
+<head>
+	<title></title>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript">
+		
+	</script>
+</head>
+
+<body>
+	<div id="app">
+		<form id="submitForm">
+			<label for="name">姓名</label>
+			<input type="text" name="name" v-model.number.trim.lazy="nameVal" id="name"/>
+
+			<div>行业:{{industryVal}}</div>
+			<label for="industry1">行业1</label>
+			<input type="checkbox" id="industry1" v-model="industryVal" value="11">
+			<label for="industry2">行业2</label>
+			<input type="checkbox" id="industry2" v-model="industryVal" value="22">
+
+			<div>类型:{{categoryVal}}</div>
+			<label for="category1">类型1</label>
+			<input type="radio" id="category1" v-model="categoryVal" value="  1  ">
+			<label for="category2">类型2</label>
+			<input type="radio" id="category2" v-model="categoryVal" value="2">
+
+			<div>平台:{{platformVal | platformFilter(platformMap)}}</div>
+<!-- 			<div>平台:{{platformMap[platformVal]}}</div>
+ -->			<select v-model.trim="platformVal">
+ 				<option value="">全部</option>
+				<option v-for="opt in selectOptionArr" :value="opt.value">
+					{{opt.name}}
+				</option>
+			</select>
+
+			<div>提交参数：{{submitParam}}</div>
+		</form>
+	</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+	var app = new Vue({
+		el: '#app',
+		data: {
+			platformMap: {'1': '上海', 2: '北京'},
+			selectOptionArr: [{name:'上海', value:"1"}, {name: "北京", value:"2"}],
+			nameVal: '',
+			industryVal: [],
+			categoryVal: '',
+			platformVal: '',
+		},
+		computed: {
+			submitParam: function() {
+				return {
+					name: this.nameVal,
+					industry: this.industryVal.join(',').trim(),
+					category: this.categoryVal.trim(),
+					paltform: this.platformVal,
+				}
+			}
+		},
+		filters: {
+			platformFilter: function (platform, platformMap) {
+				if (!platform) {
+					return '全部';
+				}
+				return platformMap[platform];
+			}
+		},
+		methods: {}
+	})
+</script>

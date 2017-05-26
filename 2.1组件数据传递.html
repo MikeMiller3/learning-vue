@@ -1,0 +1,59 @@
+<html>
+<head>
+	<title></title>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript">
+		
+	</script>
+</head>
+
+<body>
+	<div id="app">
+		<ol>
+			<li is="todo-list" :name="item.name" v-for="item in list"></li>
+		</ol>
+	</div>
+
+</body>
+</html>
+<!-- 事件为单项数据流，从父组件通过props传递到子组件 -->
+<script type="text/javascript">
+	Vue.component('todo-list', {
+		// props: ['name'],//不验证
+		props: {
+			name: {
+				type: String,//String|Number|Boolean|Function|Object|Array
+				required: true,
+				default: 'def',
+				validator: function(value){
+					return value && value.length>=3;//每次变化都要验证所有'name'
+				}
+			}
+		},
+		template: '<li @click="handleClick">{{namePro}}</li>',
+		data: function () {
+			return {
+				namePro: this.name,//初始化赋值一次
+			};
+		},
+		methods: {
+			handleClick: function(e) {
+				this.namePro = 'test';
+			}
+		}
+	})
+	var app = new Vue({
+		el: '#app',
+		data: {
+			list:[{name: '吃饭'},{name: '睡觉'}]
+		},
+		computed: {
+			
+		},
+		filters: {
+			
+		},
+		methods: {}
+	})
+</script>

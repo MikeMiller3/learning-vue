@@ -1,0 +1,69 @@
+<html>
+<head>
+	<title></title>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<!-- 父组件监听子组件事件，子组件通过this.$emit触发父组件事件 -->
+<!-- 不能用$on监听子组件抛出的事件，只能在模版里通过on绑定，啥意思 -->
+<body>
+	<div id="app">
+		<div>{{total}}</div>
+		<div is="count-item" @addcount666="addTotal"></div><!-- 监听子组件触发的事件 -->
+		<div is="count-item" @addcount666="addTotal"></div>
+		<div is="count-item" @click.native="addTotal"></div><!-- 触发原生事件，循环至子组件中 -->
+		<!-- .sync修饰符 在子组件中修改父组件 -->
+		<div is="sync-item" :foo.sync="bar"></div>
+	</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+	Vue.component('sync-item', {
+		template: '<span @click="add666">\
+						{{foo}}\
+					</span>\
+					',
+		props: {
+			foo: {default: 'foo'}
+		},
+		methods: {
+			add666: function(){
+				this.$emit('update:foo', '666');//需手动触发修改父组件data
+			}
+		}
+		
+	})
+	Vue.component('count-item', {
+		template: '<button @click="addcount">{{count}}</button>',
+		props: [],
+		data: function() {
+			return {count: 0};
+		},
+		methods: {
+			addcount: function() {
+				this.count += 1;
+				this.$emit('addcount666');//只触发父组件addcout事件，名字可以为任意，保持一致即可
+			}
+		}
+	})
+	var app = new Vue({
+		el: '#app',
+		data: {
+			total: 0,
+			bar: 'bar'
+		},
+		computed: {
+			
+		},
+		filters: {
+			
+		},
+		methods: {
+			addTotal: function() {
+				this.total += 1;
+			}
+		}
+	})
+</script>

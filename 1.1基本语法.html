@@ -1,0 +1,146 @@
+<html>
+<head>
+	<title></title>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript">
+		
+	</script>
+</head>
+
+<body>
+	<div id="app">
+		<div v-once>message(v-once)+timestamp+random:{{message+new Date().getTime()+'-'+Math.random()}}</div>
+		<div v-bind:class="{active: !isDisabled}">
+			messageFilter:{{message | messageFilter(isDisabled, '666')}}
+		</div>
+		<div v-bind:style="{color: reverseFontColor, border: 'solid 1px grey'}">
+			reversedMsg:{{reversedMsg}}
+		</div>
+		<div v-bind:style="reverseStyle">
+			style-obj:{{reversedMsg}}
+		</div>
+		<div :style="[reverseColorObj, reverseBorderObj]">
+			style-array:{{reversedMsg}}
+		</div>
+		<input type="text" 
+		v-bind:placeholder="placeholder" 
+		v-model="inputVal" 
+		v-if="existsInput" 
+		v-show="showInput"
+		:disabled="isDisabled">
+		<select v-model="select">
+			<option value="" selected>全部</option>
+			<option v-for="item in options" v-bind:value="item.value" multiple>
+				{{item.name}}
+			</option>
+		</select>
+		<div>selected value:{{select}}</div>
+
+		<input type="checkbox" :checked="checkedNum == chbList.length" id="chba" @click="checkAll"/>
+		<label for="chba">全选</label>
+		<template v-for="item in chbList">
+			<input type="checkbox" :id="'chb'+item.id" :value="item.value" :checked="item.isChecked" @click="check" v-model="checkedArr"/>
+			<label :for="'chb'+item.id">{{item.name}}</label>
+		</template>
+
+		<div>{{checkedArr}}</div>
+		<button v-on:click="resetInput">reset</button>
+		<button @click="resetInput">reset</button>
+		<ol>
+			<li v-for="(todo, index) in todoList">
+				<span>{{index}}-{{todo.name.trim().replace('pix', 'PIX')}}</span>
+
+			</li>
+		</ol>
+
+		<todo-list v-bind:todo="todo" v-for="todo in todoList"></todo-list>
+		<a href="#">url</a>
+		<ul>
+		<li v-for="(value, key, index) in curTodoList">
+			{{index}}-{{key}}:{{value}}
+		</li>
+		</ul>
+		<span v-for="n in 10">{{n}}</span>
+<!-- 把表单元素值绑定到一个动态属性 -->
+		<div>toggle:{{toggle}}</div>
+		<input type="checkbox" v-model="toggle" :true-value="toggleT" :false-value="toggleF" id="chb3">
+		<label for="chb3">chb3</label>
+
+		<input type="radio" v-model="toggle" :value="toggleT" id="radio1">
+		<label for="radio1">radio1</label>
+		<input type="radio" v-model="toggle" :value="toggleF" id="radio2">
+		<label for="radio2">radio2</label>
+
+	</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+Vue.component('todo-list', {
+		template: '<li>{{todo.name}}</li>',
+		props: ['todo']
+	})
+	var app = new Vue({
+		el: '#app',
+		data: {
+			message: 'Hello vue',
+			placeholder: '请输入内容',
+			inputVal: '',
+			existsInput: true,
+			showInput: true,
+			isDisabled: false,
+			todoList: [{id:'1', name:'武威党建上线'},{id:'2', name:'宝马pix测试'}],
+			curTodoList: {id: '1', name:'当前待办事项'},
+			reverseFontColor: 'red',
+			reverseStyle: {color: 'red', border: 'solid 1px grey'},
+			reverseColorObj: {color: 'red'},
+			reverseBorderObj: {border: 'solid 1px grey'},
+			select: '',
+			options: [{name:'香蕉', value: '1'},{name:'苹果', value: '2'}],
+			chbList: [{name:'香蕉', value: '1', id:'1'},{name:'苹果', value: '2', id: '2'}],
+			checkedArr: [],
+			checkedNum: 0,
+			toggle: 'This element is null',
+			toggleT: 'This element is true',
+			toggleF: 'This element is false',
+		},
+		computed: {//处理复杂逻辑，可以直接操作vue实例
+			reversedMsg: function(){
+				// console.log(this)//vue对象
+			return this.message.split('').reverse().join('');
+		}
+		},
+		filters: {//处理简单数据,可以接收data传来的参数
+			messageFilter: function(message, isDisabled, num) {
+				if (isDisabled) {
+					return 'disabled';
+				}
+				// console.log(this);//window对象
+				return message.toUpperCase()+num;
+			}
+		},
+		methods: {
+			resetInput: function () {
+				this.inputVal = '';
+			},
+			check: function (e) {
+				var isChecked = e.target.checked;
+				isChecked ? this.checkedNum ++ : this.checkedNum--;
+				for (var i=0;i<this.chbList.length;i++) {
+					if ('chb'+this.chbList[i].id == e.target.id) {
+						this.chbList[i].isChecked = isChecked;
+					}
+				}
+			},
+			checkAll: function (e) {
+				var isChecked = e.target.checked;
+				for(var i=0;i<this.chbList.length;i++) {
+					this.chbList[i].isChecked = isChecked;
+				}
+				this.checkedNum = isChecked ? this.chbList.length : 0;
+			}
+		}
+	})
+</script>

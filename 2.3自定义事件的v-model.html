@@ -1,0 +1,53 @@
+<html>
+<head>
+	<title></title>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+
+<body>
+	<div id="app">
+		<price-item v-model="priceA" :name="nameA"></price-item>
+		<price-item v-model="priceB" :name="nameB"></price-item>
+		<div>合计：{{total}}</div>
+	</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+	Vue.component('price-item', {
+		props: ['name'],
+		template: '<div>\
+					<label>{{name}}</label>\
+					<input :value=value @input="updatePrice($event.target.value)">\
+					</div>',
+		data: function() {
+			return {
+				value: 0,
+			}
+		},
+		methods: {
+			updatePrice: function(value) {
+				if(this.value != value) {
+					this.value = value;
+				}
+				this.$emit('input', Number(value));
+			}
+		}
+	})
+	var app = new Vue({
+		el: '#app',
+		data: {
+			priceA: 0,
+			priceB: 0,
+			nameA: '价格1',
+			nameB: '价格2'
+		},
+		computed: {
+			total: function() {
+				return this.priceA + this.priceB;
+			}
+		}
+	})
+</script>
