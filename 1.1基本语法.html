@@ -10,25 +10,36 @@
 
 <body>
 	<div id="app">
+		<h3>模版表达式支持字符串、Math、Date等方法</h3>
 		<div v-once>message(v-once)+timestamp+random:{{message+new Date().getTime()+'-'+Math.random()}}</div>
+		<h3>样式v-bind:class</h3>
 		<div v-bind:class="{active: !isDisabled}">
 			messageFilter:{{message | messageFilter(isDisabled, '666')}}
 		</div>
+		<h3>样式v-bind:style（驼峰）</h3>
 		<div v-bind:style="{color: reverseFontColor, border: 'solid 1px grey'}">
 			reversedMsg:{{reversedMsg}}
 		</div>
+		<h3>样式v-bind:style（对象）</h3>
 		<div v-bind:style="reverseStyle">
 			style-obj:{{reversedMsg}}
 		</div>
+		<h3>样式v-bind:style（数组）</h3>
 		<div :style="[reverseColorObj, reverseBorderObj]">
 			style-array:{{reversedMsg}}
 		</div>
+		<h3>v-bind，v-if，v-show，v-model</h3>
 		<input type="text" 
 		v-bind:placeholder="placeholder" 
 		v-model="inputVal" 
 		v-if="existsInput" 
 		v-show="showInput"
 		:disabled="isDisabled">
+
+		<h3>methods</h3>
+		<button v-on:click="resetInput">empty input above</button>
+
+		<h3>select</h3>
 		<select v-model="select">
 			<option value="" selected>全部</option>
 			<option v-for="item in options" v-bind:value="item.value" multiple>
@@ -37,34 +48,40 @@
 		</select>
 		<div>selected value:{{select}}</div>
 
+		<h3>checkbox</h3>
 		<input type="checkbox" :checked="checkedNum == chbList.length" id="chba" @click="checkAll"/>
 		<label for="chba">全选</label>
 		<template v-for="item in chbList">
-			<input type="checkbox" :id="'chb'+item.id" :value="item.value" :checked="item.isChecked" @click="check" v-model="checkedArr"/>
+			<input type="checkbox" :id="'chb'+item.id" :value="item.value" :checked="item.isChecked" @click="check"/>
 			<label :for="'chb'+item.id">{{item.name}}</label>
 		</template>
+		<div>chbList：{{chbList}}</div>
 
-		<div>{{checkedArr}}</div>
-		<button v-on:click="resetInput">reset</button>
-		<button @click="resetInput">reset</button>
+		<h3>遍历数组</h3>
 		<ol>
 			<li v-for="(todo, index) in todoList">
-				<span>{{index}}-{{todo.name.trim().replace('pix', 'PIX')}}</span>
+				<span>value:{{todo}},index:{{index}}</span>
 
 			</li>
 		</ol>
 
-		<todo-list v-bind:todo="todo" v-for="todo in todoList"></todo-list>
-		<a href="#">url</a>
+		<h3>遍历对象</h3>
 		<ul>
-		<li v-for="(value, key, index) in curTodoList">
-			{{index}}-{{key}}:{{value}}
+		<li v-for="(value, key, index) in curTodo">
+			遍历对象：value:{{value}},key:{{key}},index:{{index}}
 		</li>
 		</ul>
+
+		<h3>简单组件</h3>
+		<todo-list v-bind:todo="todo" v-for="todo in todoList"></todo-list>
+
+		<h3>v-for取整</h3>
 		<span v-for="n in 10">{{n}}</span>
-<!-- 把表单元素值绑定到一个动态属性 -->
+
+		<h3>把表单元素值绑定到一个动态属性</h3>
+		<!-- 把表单元素值绑定到一个动态属性 -->
 		<div>toggle:{{toggle}}</div>
-		<input type="checkbox" v-model="toggle" :true-value="toggleT" :false-value="toggleF" id="chb3">
+		<input type="checkbox" v-model="toggle" :true-value="toggleChk" :false-value="toggleUnchk" id="chb3">
 		<label for="chb3">chb3</label>
 
 		<input type="radio" v-model="toggle" :value="toggleT" id="radio1">
@@ -92,7 +109,7 @@ Vue.component('todo-list', {
 			showInput: true,
 			isDisabled: false,
 			todoList: [{id:'1', name:'武威党建上线'},{id:'2', name:'宝马pix测试'}],
-			curTodoList: {id: '1', name:'当前待办事项'},
+			curTodo: {id: '1', name:'当前待办事项'},
 			reverseFontColor: 'red',
 			reverseStyle: {color: 'red', border: 'solid 1px grey'},
 			reverseColorObj: {color: 'red'},
@@ -100,9 +117,10 @@ Vue.component('todo-list', {
 			select: '',
 			options: [{name:'香蕉', value: '1'},{name:'苹果', value: '2'}],
 			chbList: [{name:'香蕉', value: '1', id:'1'},{name:'苹果', value: '2', id: '2'}],
-			checkedArr: [],
 			checkedNum: 0,
 			toggle: 'This element is null',
+			toggleChk: 'This element is checked',
+			toggleUnchk: 'This element is unchecked',
 			toggleT: 'This element is true',
 			toggleF: 'This element is false',
 		},
@@ -112,7 +130,7 @@ Vue.component('todo-list', {
 			return this.message.split('').reverse().join('');
 		}
 		},
-		filters: {//处理简单数据,可以接收data传来的参数
+		filters: {//处理简单数据,可以接收data传来的参数，第一个参数为需要过滤的取值
 			messageFilter: function(message, isDisabled, num) {
 				if (isDisabled) {
 					return 'disabled';
