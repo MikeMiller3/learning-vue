@@ -1,0 +1,61 @@
+<html>
+<head>
+	<title></title>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://unpkg.com/vuex" type="text/javascript"></script>
+</head>
+
+<body>
+	<div id="app">
+		
+	</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+var store = new Vuex.Store({
+	state: {
+		count: 0
+	},
+	mutations: {
+		add(state) {
+			state.count++;
+		},
+		minus(state) {
+			state.count--;
+		}
+	}
+})
+
+var app = new Vue({
+	el: '#app',
+	template: '<div>{{cmptCount}}\
+					<div>\
+						<button @click="add">+</button>\
+						<button @click="minus">-</button>\
+					</div>\
+				</div>',
+	/*data初始值只赋值一次，computed每次渲染都赋值*/
+	/*由于 Vuex 的状态存储是响应式的，从 store 实例中读取状态最简单的方法就是在计算属性中返回某个状态
+	然而，这种模式导致组件依赖的全局状态单例。
+	在模块化的构建系统中，在每个需要使用 state 的组件中需要频繁地导入，并且在测试组件时需要模拟状态。
+	Vuex 通过 store 选项，提供了一种机制将状态从根组件『注入』到每一个子组件中（需调用 Vue.use(Vuex)）*/
+	data: {count: store.state.count},
+	computed: {
+		cmptCount: function() {
+			return store.state.count
+		}
+	},
+	methods: {
+		add: function(){
+			store.commit('add');
+		},
+		minus: function(){
+			store.commit('minus');
+		}
+	}
+})
+</script>
