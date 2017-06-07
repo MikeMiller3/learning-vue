@@ -1,0 +1,47 @@
+<html>
+<head>
+	<title></title>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+	
+<script type="text/javascript">
+	
+</script>
+</head>
+
+<body>
+	<div id="app">
+		<p>app</p>
+		<router-link to="/data">data</router-link>
+		<router-link to="/service">service</router-link>
+		<router-link to="/service1">service1</router-link>
+
+		<!-- 路由匹配到的组件渲染到这里 -->
+		<router-view></router-view>
+	</div>
+<script type="text/javascript">
+	const Data = {template: '<div>data{{$route.params.id}}</div>'};
+	const Service = {
+		template: '<div>service</div>',
+		watch: {//复用组件时，可以通过watch追踪$route对象变化
+			'$route': function(to, from) {
+				console.log(`From:${from.path},To:${to.path}`)
+			}
+		}
+	};
+	const routes = [
+	  { path: '/data/:id', component: Data },/*动态路由匹配：通过$router.params*/
+	  { path: '/service', component: Service },
+	  { path: '/service1', component: Service },
+	  { path: '/service1', component: Data },/*同一个路径可以匹配多个路由,谁先定义的，谁的优先级就最高*/
+	]
+	const router = new VueRouter({
+		routes
+	})
+	var app = new Vue({
+		el: '#app',
+		router
+	}).$mount('#app')
+
+
+</script>

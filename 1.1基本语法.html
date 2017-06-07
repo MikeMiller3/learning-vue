@@ -3,9 +3,10 @@
 	<title></title>
 	<script src="https://unpkg.com/vue/dist/vue.js"></script>
 	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-	<script type="text/javascript">
-		
-	</script>
+	<style type="text/css">
+	.fade-enter-active, .fade-leave-active {transition: opacity .5s}
+	.fade-enter, .fade-leave-active {opacity: 0}
+	</style>
 </head>
 
 <body>
@@ -29,12 +30,16 @@
 			style-array:{{reversedMsg}}
 		</div>
 		<h3>v-bind，v-if，v-show，v-model</h3>
+		<transition name="fade">
+			
 		<input type="text" 
 		v-bind:placeholder="placeholder" 
 		v-model="inputVal" 
 		v-if="existsInput" 
 		v-show="showInput"
 		:disabled="isDisabled">
+
+		</transition>
 
 		<h3>methods</h3>
 		<button v-on:click="resetInput">empty input above</button>
